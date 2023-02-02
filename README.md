@@ -21,6 +21,7 @@ test users, messages with setUp and tearDown inside the main()
 
 Three other services: 
 Message Service
+Encryption Service
 Receipt Service
 Typing Notifier Service
 
@@ -47,15 +48,38 @@ final connection and Rethinkdb (like with all other service classes)
 constructor as usual
 
 idea: make an abstract class for all models and services
+each model abstract must have constructor, placeholder, toJSON and fromJSON 
 abstrac class for service just includes final connection and rethinkdb
 
 ----
 
 message encryption
 add encrypt: as a dependency
-create Iencryption
+create Encryptservice
 {
-    String encrypt
-    String decrypt
+    final Encrypter encrypter,
+    final iv = IV.fromLength(16)
 
+    String encrypt(text)
+    String decrypt(text)
+
+}   
+just refer to guide for this
+Then instead of sending a plain message string to db, send the encrypted one instead.
+-> inside messageservicea add boolean encrypted 
+
+----
+class Receipt{
+    String recipient, String message id, ReceiptStatus status, DateTime timestamp, String id
 }
+Receiptstatus is actually an enum of either "sent", "delivered", "read"
+But add EnumParsing extension to include value() and stuff...???????? but if you don't want extra boilerplate
+just use integer
+
+Serivice:
+future bool send (receipt)
+stream receipt receipts (user)
+dispose()
+basically almost the same as message service except without encryption
+https://www.youtube.com/watch?v=6QVnW5zClb8&list=PLFhJomvoCKC_mXNBDnpO46Hea_PkCiVWS&index=5
+receipts are for typing?? 28:00
